@@ -1,0 +1,246 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="te">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>చిన్నతల్లి రుచులు - రుచికరమైన పచ్చడుల బ్రోచర్</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Telugu:wght@400;700&family=Tiro+Telugu&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans Telugu', sans-serif;
+        }
+        .telugu-title {
+            font-family: 'Tiro Telugu', serif;
+        }
+    </style>
+</head>
+<body class="bg-amber-50 text-stone-800">
+
+    <!-- Container -->
+    <div class="container mx-auto p-4 sm:p-6">
+
+        <!-- Header Section -->
+        <header class="text-center mb-6">
+            <h1 class="text-3xl sm:text-4xl font-bold text-red-800 telugu-title">చిన్నతల్లి రుచులు</h1>
+            <p class="text-lg sm:text-xl mt-2 text-green-800 font-semibold">సంప్రదాయ రుచిని ఆస్వాదించండి!</p>
+        </header>
+
+        <!-- Discount Offer Section -->
+        <section class="bg-gradient-to-r from-green-600 to-yellow-500 text-white rounded-xl shadow-2xl p-6 mb-6 text-center">
+            <h2 class="text-xl sm:text-2xl font-bold mb-4 telugu-title">మొదటి ఆర్డర్‌పై 20% డిస్కౌంట్!</h2>
+            <p class="text-base sm:text-lg mb-4">
+                మొదటిసారి ఆర్డర్ చేసిన వారికి ప్రత్యేక ఆఫర్! మీ మొదటి ఆర్డర్‌పై 20% తగ్గింపు పొందండి. ఇప్పుడే ఆర్డర్ చేయండి మరియు ఆంధ్ర, తెలంగాణ రుచులను ఆస్వాదించండి!
+            </p>
+            <a id="whatsapp-discount-link" href="https://wa.me/+917337551651?text=నమస్కారం,%20చిన్నతల్లి%20రుచులు.%20నేను%20మొదటి%20ఆర్డర్‌పై%2020%25%20డిస్కౌంట్%20తో%20పచ్చళ్ల%20గురించి%20వివరాలు%20తెలుసుకోవాలనుకుంటున్నాను." target="_blank" class="inline-block bg-white text-green-700 font-bold py-2 px-6 rounded-full text-base hover:bg-green-100 transition-colors">
+                <svg class="inline-block w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M17.34,3.31A10.42,10.42,0,0,0,2.66,17.69a10.4,10.4,0,0,0,14.68-14.38ZM11.1,13.84l-1-2.4a.2.2,0,0,1,0-.17.52.52,0,0,1,.35-.35l2.4-1a.2.2,0,0,1,.17,0l.16.06a.2.2,0,0,1,.1.24L12,12.59a.2.2,0,0,1-.3.12ZM8.9,11.41l1,2.4a.2.2,0,0,1,0,.17.52.52,0,0,1-.35.35l-2.4,1a.2.2,0,0,1-.17,0l-.16-.06a.2.2,0,0,1-.1-.24L8,7.41a.2.2,0,0,1,.3-.12Z"/></svg>
+                డిస్కౌంట్‌తో ఆర్డర్ చేయండి
+            </a>
+        </section>
+
+        <!-- Pickle Selection Section -->
+        <section class="bg-white rounded-xl shadow-lg p-6 mb-6">
+            <h2 class="text-xl sm:text-2xl font-bold text-center text-red-800 mb-4 telugu-title">మీ పచ్చడిని ఎంచుకోండి</h2>
+            <div class="mb-4">
+                <label for="pickle-select" class="block text-base font-semibold text-green-800 mb-2">పచ్చడి ఎంచుకోండి:</label>
+                <select id="pickle-select" class="w-full p-2 border-2 border-green-200 rounded-lg text-base">
+                    <option value="" disabled selected>పచ్చడిని ఎంచుకోండి</option>
+                    <!-- Non-Veg Pickles -->
+                    <option value="బోన్‌లెస్ చికెన్ పచ్చడి - ₹1500">బోన్‌లెస్ చికెన్ పచ్చడి - ₹1500</option>
+                    <option value="బోన్-ఇన్ చికెన్ పచ్చడి - ₹1200">బోన్-ఇన్ చికెన్ పచ్చడి - ₹1200</option>
+                    <option value="మటన్ బోన్‌లెస్ పచ్చడి - ₹2200">మటన్ బోన్‌లెస్ పచ్చడి - ₹2200</option>
+                    <option value="రొయ్యల పచ్చడి - ₹1999">రొయ్యల పచ్చడి - ₹1999</option>
+                    <option value="గోంగూర చికెన్ పచ్చడి - ₹1500">గోంగూర చికెన్ పచ్చడి - ₹1500</option>
+                    <option value="చేపల పచ్చడి - ₹1200">చేపల పచ్చడి - ₹1200</option>
+                    <!-- Veg Pickles -->
+                    <option value="అల్లం పచ్చడి - ₹800">అల్లం పచ్చడి - ₹800</option>
+                    <option value="గోంగూర పచ్చడి - ₹748">గోంగూర పచ్చడి - ₹748</option>
+                    <option value="కాకరకాయ పచ్చడి - ₹748">కాకరకాయ పచ్చడి - ₹748</option>
+                    <option value="కొత్తిమీర పచ్చడి - ₹750">కొత్తిమీర పచ్చడి - ₹750</option>
+                    <option value="నిమ్మకాయ పచ్చడి - ₹748">నిమ్మకాయ పచ్చడి - ₹748</option>
+                    <option value="మామిడి పచ్చడి - ₹750">మామిడి పచ్చడి - ₹750</option>
+                    <option value="పండు మిర్చి + గోంగూర - ₹748">పండు మిర్చి + గోంగూర - ₹748</option>
+                    <option value="పండు మిర్చి పచ్చడి - ₹748">పండు మిర్చి పచ్చడి - ₹748</option>
+                    <option value="పుదీనా పచ్చడి - ₹750">పుదీనా పచ్చడి - ₹750</option>
+                    <option value="తెలంగాణ స్పెషల్ అల్లం - ₹750">తెలంగాణ స్పెషల్ అల్లం - ₹750</option>
+                    <option value="టమోటా పచ్చడి - ₹748">టమోటా పచ్చడి - ₹748</option>
+                    <option value="ఉసిరికాయ పచ్చడి - ₹750">ఉసిరికాయ పచ్చడి - ₹750</option>
+                    <!-- Combo Offer -->
+                    <option value="టోటల్ వెజ్ కాంబో ఆఫర్ - ₹9000">టోటల్ వెజ్ కాంబో ఆఫర్ - ₹9000</option>
+                </select>
+            </div>
+            <a id="whatsapp-order-link" href="https://wa.me/+917337551651?text=నమస్కారం,%20చిన్నతల్లి%20రుచులు.%20నేను%20మొదటి%20ఆర్డర్‌పై%2020%25%20డిస్కౌంట్%20తో%20పచ్చళ్ల%20గురించి%20వివరాలు%20తెలుసుకోవాలనుకుంటున్నాను." target="_blank" class="inline-block bg-green-700 text-white font-bold py-2 px-6 rounded-full text-base hover:bg-green-600 transition-colors w-full text-center">
+                <svg class="inline-block w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M17.34,3.31A10.42,10.42,0,0,0,2.66,17.69a10.4,10.4,0,0,0,14.68-14.38ZM11.1,13.84l-1-2.4a.2.2,0,0,1,0-.17.52.52,0,0,1,.35-.35l2.4-1a.2.2,0,0,1,.17,0l.16.06a.2.2,0,0,1,.1.24L12,12.59a.2.2,0,0,1-.3.12ZM8.9,11.41l1,2.4a.2.2,0,0,1,0,.17.52.52,0,0,1-.35.35l-2.4,1a.2.2,0,0,1-.17,0l-.16-.06a.2.2,0,0,1,.1-.24L8,7.41a.2.2,0,0,1,.3-.12Z"/></svg>
+                WhatsApp ద్వారా ఆర్డర్ చేయండి
+            </a>
+        </section>
+
+        <!-- Pickles List Section -->
+        <section class="mb-6">
+            <h2 class="text-xl sm:text-2xl font-bold text-center text-red-800 mb-4 telugu-title">మా రుచికరమైన పచ్చడులు</h2>
+
+            <!-- Non-Veg Pickles -->
+            <div class="mb-6">
+                <h3 class="text-lg font-semibold text-green-800 mb-4 text-center border-b-2 border-green-200 pb-2">నాన్-వెజ్ పచ్చడులు (1 కిలో)</h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div class="bg-white rounded-lg shadow-md p-4"><h4 class="text-base font-bold text-stone-900">బోన్‌లెస్ చికెన్ పచ్చడి</h4><p class="text-lg font-bold text-red-700">₹1500</p></div>
+                    <div class="bg-white rounded-lg shadow-md p-4"><h4 class="text-base font-bold text-stone-900">బోన్-ఇన్ చికెన్ పచ్చడి</h4><p class="text-lg font-bold text-red-700">₹1200</p></div>
+                    <div class="bg-white rounded-lg shadow-md p-4"><h4 class="text-base font-bold text-stone-900">మటన్ బోన్‌లెస్ పచ్చడి</h4><p class="text-lg font-bold text-red-700">₹2200</p></div>
+                    <div class="bg-white rounded-lg shadow-md p-4"><h4 class="text-base font-bold text-stone-900">రొయ్యల పచ్చడి</h4><p class="text-lg font-bold text-red-700">₹1999</p></div>
+                    <div class="bg-white rounded-lg shadow-md p-4"><h4 class="text-base font-bold text-stone-900">గోంగూర చికెన్ పచ్చడి</h4><p class="text-lg font-bold text-red-700">₹1500</p></div>
+                    <div class="bg-white rounded-lg shadow-md p-4"><h4 class="text-base font-bold text-stone-900">చేపల పచ్చడి</h4><p class="text-lg font-bold text-red-700">₹1200</p></div>
+                </div>
+            </div>
+
+            <!-- Veg Pickles -->
+            <div class="mb-6">
+                <h3 class="text-lg font-semibold text-green-800 mb-4 text-center border-b-2 border-green-200 pb-2">వెజ్ పచ్చడులు (1 కిలో)</h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div class="bg-white rounded-lg shadow-md p-4"><h4 class="text-base font-bold text-stone-900">అల్లం పచ్చడి</h4><p class="text-lg font-bold text-red-700">₹800</p></div>
+                    <div class="bg-white rounded-lg shadow-md p-4"><h4 class="text-base font-bold text-stone-900">గోంగూర పచ్చడి</h4><p class="text-lg font-bold text-red-700">₹748</p></div>
+                    <div class="bg-white rounded-lg shadow-md p-4"><h4 class="text-base font-bold text-stone-900">కాకరకాయ పచ్చడి</h4><p class="text-lg font-bold text-red-700">₹748</p></div>
+                    <div class="bg-white rounded-lg shadow-md p-4"><h4 class="text-base font-bold text-stone-900">కొత్తిమీర పచ్చడి</h4><p class="text-lg font-bold text-red-700">₹750</p></div>
+                    <div class="bg-white rounded-lg shadow-md p-4"><h4 class="text-base font-bold text-stone-900">నిమ్మకాయ పచ్చడి</h4><p class="text-lg font-bold text-stone-900">₹748</p></div>
+                    <div class="bg-white rounded-lg shadow-md p-4"><h4 class="text-base font-bold text-stone-900">మామిడి పచ్చడి</h4><p class="text-lg font-bold text-red-700">₹750</p></div>
+                    <div class="bg-white rounded-lg shadow-md p-4"><h4 class="text-base font-bold text-stone-900">పండు మిర్చి + గోంగూర</h4><p class="text-lg font-bold text-red-700">₹748</p></div>
+                    <div class="bg-white rounded-lg shadow-md p-4"><h4 class="text-base font-bold text-stone-900">పండు మిర్చి పచ్చడి</h4><p class="text-lg font-bold text-red-700">₹748</p></div>
+                    <div class="bg-white rounded-lg shadow-md p-4"><h4 class="text-base font-bold text-stone-900">పుదీనా పచ్చడి</h4><p class="text-lg font-bold text-red-700">₹750</p></div>
+                    <div class="bg-white rounded-lg shadow-md p-4"><h4 class="text-base font-bold text-stone-900">తెలంగాణ స్పెషల్ అల్లం</h4><p class="text-lg font-bold text-red-700">₹750</p></div>
+                    <div class="bg-white rounded-lg shadow-md p-4"><h4 class="text-base font-bold text-stone-900">టమోటా పచ్చడి</h4><p class="text-lg font-bold text-red-700">₹748</p></div>
+                    <div class="bg-white rounded-lg shadow-md p-4"><h4 class="text-base font-bold text-stone-900">ఉసిరికాయ పచ్చడి</h4><p class="text-lg font-bold text-red-700">₹750</p></div>
+                </div>
+            </div>
+
+            <!-- Combo Offer -->
+            <div class="bg-gradient-to-r from-green-100 to-yellow-100 border-2 border-green-600 rounded-xl p-4 text-center">
+                <h3 class="text-lg font-bold text-green-800 telugu-title">టోటల్ వెజ్ కాంబో ఆఫర్!</h3>
+                <p class="text-2xl font-extrabold text-red-700 my-2">₹9000</p>
+                <p class="text-base text-stone-700">అన్ని వెజ్ పచ్చళ్లను కలిపి ప్రత్యేక ధరకు!</p>
+            </div>
+        </section>
+
+        <!-- Why Choose Us Section -->
+        <section class="bg-white rounded-xl shadow-lg p-6 mb-6">
+            <h2 class="text-xl sm:text-2xl font-bold text-center text-red-800 mb-4 telugu-title">చిన్నతల్లి రుచులను ఎందుకు?</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-center">
+                <div class="p-2">
+                    <div class="flex items-center justify-center h-12 w-12 rounded-full bg-amber-100 mx-auto mb-2">
+                        <svg class="w-6 h-6 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.293 2.293a1 1 0 010 1.414L10 16l-4 4-4-4 5.293-5.293a1 1 0 011.414 0L13 12m0 0l-2.293 2.293a1 1 0 01-1.414 0L4 9.414V11m8 8h4m-4 0V9m0 4.586l2.293-2.293a1 1 0 011.414 0L20 12m-8 8v4m2-2h-4"></path></svg>
+                    </div>
+                    <h3 class="text-base font-bold">నాణ్యత</h3>
+                    <p class="text-sm">అత్యుత్తమ పదార్థాలతో నోరూరించే పచ్చడులు.</p>
+                </div>
+                <div class="p-2">
+                    <div class="flex items-center justify-center h-12 w-12 rounded-full bg-green-100 mx-auto mb-2">
+                        <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+                    </div>
+                    <h3 class="text-base font-bold">పరిశుభ్రత</h3>
+                    <p class="text-sm">ప్రిజర్వేటివ్‌లు లేకుండా, పరిశుభ్రంగా తయారు.</p>
+                </div>
+                <div class="p-2">
+                    <div class="flex items-center justify-center h-12 w-12 rounded-full bg-blue-100 mx-auto mb-2">
+                        <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                    </div>
+                    <h3 class="text-base font-bold">షెల్ఫ్ లైఫ్</h3>
+                    <p class="text-sm">గాజు జార్‌లలో 9-12 నెలల షెల్ఫ్ లైఫ్.</p>
+                </div>
+                <div class="p-2">
+                    <div class="flex items-center justify-center h-12 w-12 rounded-full bg-purple-100 mx-auto mb-2">
+                        <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10l2-2h8a1 1 0 001-1zM21 12h-4M21 12l-2-2m2 2l-2 2"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 12h4"></path></svg>
+                    </div>
+                    <h3 class="text-base font-bold">సేవ</h3>
+                    <p class="text-sm">జాతీయ, అంతర్జాతీయ కొరియర్ సేవలు.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Call to Action Section -->
+        <section class="bg-gradient-to-r from-red-700 to-orange-600 text-white rounded-xl shadow-2xl p-6 text-center">
+            <h2 class="text-xl sm:text-2xl font-bold mb-4 telugu-title">ప్రత్యేక ఆఫర్!</h2>
+            <p class="text-base mb-4">
+                ఆంధ్ర, తెలంగాణ రుచులతో ఇంట్లో తయారు చేసిన పచ్చడులను ఆస్వాదించండి! ఒక్కసారి ప్రయత్నించండి, మళ్ళీ తిరిగి వస్తారు!
+            </p>
+            <div class="flex flex-col sm:flex-row justify-center gap-4">
+                <a href="https://wa.me/+917337551651?text=నమస్కారం,%20చిన్నతల్లి%20రుచులు.%20నేను%20మొదటి%20ఆర్డర్‌పై%2020%25%20డిస్కౌంట్%20తో%20పచ్చళ్ల%20గురించి%20వివరాలు%20తెలుసుకోవాలనుకుంటున్నాను." target="_blank" class="inline-block bg-white text-green-700 font-bold py-2 px-6 rounded-full text-base hover:bg-green-100 transition-colors">
+                    <svg class="inline-block w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M17.34,3.31A10.42,10.42,0,0,0,2.66,17.69a10.4,10.4,0,0,0,14.68-14.38ZM11.1,13.84l-1-2.4a.2.2,0,0,1,0-.17.52.52,0,0,1,.35-.35l2.4-1a.2.2,0,0,1,.17,0l.16.06a.2.2,0,0,1,.1.24L12,12.59a.2.2,0,0,1-.3.12ZM8.9,11.41l1,2.4a.2.2,0,0,1,0,.17.52.52,0,0,1-.35.35l-2.4,1a.2.2,0,0,1-.17,0l-.16-.06a.2.2,0,0,1,.1-.24L8,7.41a.2.2,0,0,1,.3-.12Z"/></svg>
+                    WhatsApp ఆర్డర్: +91 73375 51651
+                </a>
+                <a href="https://wa.me/?text=చిన్నతల్లి%20రుచులు%20నుండి%20ఆథెంటిక్%20పచ్చడులు!%20మొదటి%20ఆర్డర్‌పై%2020%25%20డిస్కౌంట్.%20వెజ్%20మరియు%20నాన్-వెజ్%20ఎంపికలు%20₹748%20నుండి.%20వివరాలు:%20[వెబ్‌సైట్%20లింక్‌ను%20ఇక్కడ%20జోడించండి]" target="_blank" class="inline-block bg-green-700 text-white font-bold py-2 px-6 rounded-full text-base hover:bg-green-600 transition-colors">
+                    <svg class="inline-block w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M17.34,3.31A10.42,10.42,0,0,0,2.66,17.69a10.4,10.4,0,0,0,14.68-14.38ZM11.1,13.84l-1-2.4a.2.2,0,0,1,0-.17.52.52,0,0,1,.35-.35l2.4-1a.2.2,0,0,1,.17,0l.16.06a.2.2,0,0,1,.1.24L12,12.59a.2.2,0,0,1-.3.12ZM8.9,11.41l1,2.4a.2.2,0,0,1,0,.17.52.52,0,0,1-.35.35l-2.4,1a.2.2,0,0,1-.17,0l-.16-.06a.2.2,0,0,1,.1-.24L8,7.41a.2.2,0,0,1,.3-.12Z"/></svg>
+                    WhatsApp ద్వారా షేర్
+                </a>
+                <a href="https://www.facebook.com/sharer/sharer.php?u=[వెబ్‌సైట్%20లింక్‌ను%20ఇక్కడ%20జోడించండి]&quote=చిన్నతల్లి%20రుచులు%20నుండి%20ఆథెంటిక్%20పచ్చడులు!%20మొదటి%20ఆర్డర్‌పై%2020%25%20డిస్కౌంట్.%20వెజ్%20మరియు%20నాన్-వెజ్%20ఎంపికలు%20₹748%20నుండి." target="_blank" class="inline-block bg-blue-600 text-white font-bold py-2 px-6 rounded-full text-base hover:bg-blue-500 transition-colors">
+                    <svg class="inline-block w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.879v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.563V12h2.773l-.443 2.89h-2.33v6.989C18.343 21.129 22 16.99 22 12z"/></svg>
+                    Facebook షేర్
+                </a>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="text-center mt-6 text-stone-600">
+            <p class="font-bold telugu-title text-lg">చిన్నతల్లి రుచులు</p>
+            <p class="text-sm mt-1">రుచి, శుచి మా ప్రత్యేకం!</p>
+            <p class="text-sm">వివరాల కోసం: <a href="[వెబ్‌సైట్%20లింక్‌ను%20ఇక్కడ%20జోడించండి]" target="_blank" class="text-green-700 hover:underline">వెబ్‌సైట్‌ను సందర్శించండి</a></p>
+        </footer>
+
+    </div>
+
+    <!-- JavaScript for Dynamic WhatsApp Link -->
+    <script>
+        const pickleSelect = document.getElementById('pickle-select');
+        const whatsappOrderLink = document.getElementById('whatsapp-order-link');
+
+        pickleSelect.addEventListener('change', function () {
+            const selectedPickle = this.value;
+            if (selectedPickle) {
+                const encodedMessage = encodeURIComponent(`నమస్కారం, చిన్నతల్లి రుచులు. నేను ${selectedPickle} ఆర్డర్ చేయాలనుకుంటున్నాను. మొదటి ఆర్డర్‌పై 20% డిస్కౌంట్ వర్తిస్తుందా? వివరాలు తెలపండి.`);
+                whatsappOrderLink.href = `https://wa.me/+917337551651?text=${encodedMessage}`;
+            } else {
+                whatsappOrderLink.href = 'https://wa.me/+917337551651?text=నమస్కారం,%20చిన్నతల్లి%20రుచులు.%20నేను%20మొదటి%20ఆర్డర్‌పై%2020%25%20డిస్కౌంట్%20తో%20పచ్చళ్ల%20గురించి%20వివరాలు%20తెలుసుకోవాలనుకుంటున్నాను.';
+            }
+        });
+    </script>
+
+</body>
+</html>
